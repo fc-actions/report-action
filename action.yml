@@ -51,7 +51,8 @@ runs:
         faraday-cli auth -f "${{ inputs.instance-url }}" -i -u "${{ inputs.username }}" -p "${{ inputs.password }}"
         faraday-cli workspace select "${{ inputs.workspace }}" || faraday-cli workspace create "${{ inputs.workspace }}" 
       shell: bash
-    - if: !inputs.ignore-info-severity || !inputs.quiet
+    - name: Config Reporter
+      if: !(inputs.ignore-info-severity && inputs.quiet)
       run: |  
         faraday-cli set quiet ${{ inputs.quiet }}
         faraday-cli set allow_style ${{ inputs.allow-style }}
