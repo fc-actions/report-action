@@ -17,6 +17,10 @@ inputs:
     description: 'The path to the result file'
     required: true
     default: ''
+  workspace:  
+    description: 'The workspace to upload the result to'
+    required: true
+    default: ''
   username:  
     description: 'The username to login to the reporter tool'
     required: false
@@ -33,5 +37,5 @@ runs:
       shell: bash
     - run:   faraday-cli auth -f "${{ inputs.instance-url }}" -i -u "${{ inputs.username }}" -p "${{ inputs.password }}"
       shell: bash
-    - run:   faraday-cli tool report "${{ inputs.result-file }}"
+    - run:   faraday-cli tool report "${{ inputs.result-file }}" -w "${{ inputs.workspace }}"
       shell: bash
