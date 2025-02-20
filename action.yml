@@ -52,7 +52,7 @@ runs:
         faraday-cli workspace select "${{ inputs.workspace }}" || faraday-cli workspace create "${{ inputs.workspace }}" 
       shell: bash
     - name: Config Reporter
-      if: !(inputs.ignore-info-severity && inputs.quiet)
+      if: ${{ !(inputs.ignore-info-severity && inputs.quiet) }}
       run: |  
         faraday-cli set quiet ${{ inputs.quiet }}
         faraday-cli set allow_style ${{ inputs.allow-style }}
