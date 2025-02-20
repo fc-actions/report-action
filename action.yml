@@ -2,7 +2,7 @@
 name: 'FireClover Reporter'
 description: 'FireClover Vulnerability Management Reporter Tool'
 branding:
-  icon: 'flame'  
+  icon: 'align-left'  
   color: 'orange'
 inputs:
   instance-url:
