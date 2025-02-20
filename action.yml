@@ -29,13 +29,32 @@ inputs:
     description: 'The password to login to the reporter tool'
     required: true
     default: ''
+  quiet:  
+    description: 'Verbosity of the tool output'
+    required: false
+    default: true
+  ignore-info-severity:  
+    description: 'Ignore information severity vulnerabilities of the tool output'
+    required: false
+    default: true
+  allow-style:  
+    description: 'Verbosity style of the tool output (valid values:Always, Never, Terminal)'
+    required: false
+    default: 'Terminal'
  
 runs:
   using: "composite"
   steps:
-    - run:   pip install faraday-cli
+    - name: Setup Reporter
+      run: |  
+        pip install faraday-cli -q
+        faraday-cli set quiet ${{ inputs.quiet }}
+        faraday-cli set allow_style ${{ inputs.allow-style }}
+        faraday-cli set ignore_info_severity ${{ inputs.ignore-info-severity }}
+        faraday-cli auth -f "${{ inputs.instance-url }}" -i -u "${{ inputs.username }}" -p "${{ inputs.password }}"
+        faraday-cli workspace select "${{ inputs.workspace }}" || faraday-cli workspace create "${{ inputs.workspace }}" 
       shell: bash
-    - run:   faraday-cli auth -f "${{ inputs.instance-url }}" -i -u "${{ inputs.username }}" -p "${{ inputs.password }}"
+    - run:   
       shell: bash
-    - run:   faraday-cli tool report "${{ inputs.result-file }}" -w "${{ inputs.workspace }}"
+    - run:   faraday-cli tool report "${{ inputs.result-file }}" -w "${{ inputs.workspace }}" || (faraday-cli workspace create "${{ inputs.workspace }}" && faraday-cli tool report "${{ inputs.result-file }}" -w "${{ inputs.workspace }}") 
       shell: bash
