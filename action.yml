@@ -45,19 +45,19 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup Reporter
-      run: |  
+    - run: |  
+        echo "Configuring FireClover Reporter"
         cp ${GITHUB_ACTION_PATH}/.faraday-cli.yml ~/.faraday-cli.yml
         pip install faraday-cli -q
-        faraday-cli auth -f "${{ inputs.instance-url }}" -i -u "${{ inputs.username }}" -p "${{ inputs.password }}"
+        faraday-cli auth -f "${{ inputs.instance-url }}" -u "${{ inputs.username }}" -p "${{ inputs.password }}"
       shell: bash
-    - name: Config Reporter
-      if: ${{ !(inputs.ignore-info-severity && inputs.quiet) }}
+
+    - if: ${{ !(inputs.ignore-info-severity && inputs.quiet) }}
       run: |  
         faraday-cli set quiet ${{ inputs.quiet }}
         faraday-cli set allow_style ${{ inputs.allow-style }}
         faraday-cli set ignore_info_severity ${{ inputs.ignore-info-severity }}
       shell: bash
-    - name:  Upload Results
-      run:   faraday-cli tool report "${{ inputs.result-file }}" -w "${{ inputs.workspace }}" 
+
+    - run:   faraday-cli tool report "${{ inputs.result-file }}" -w "${{ inputs.workspace }}" 
       shell: bash
