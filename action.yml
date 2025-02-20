@@ -54,7 +54,6 @@ runs:
         faraday-cli auth -f "${{ inputs.instance-url }}" -i -u "${{ inputs.username }}" -p "${{ inputs.password }}"
         faraday-cli workspace select "${{ inputs.workspace }}" || faraday-cli workspace create "${{ inputs.workspace }}" 
       shell: bash
-    - run:   
-      shell: bash
-    - run:   faraday-cli tool report "${{ inputs.result-file }}" -w "${{ inputs.workspace }}" || (faraday-cli workspace create "${{ inputs.workspace }}" && faraday-cli tool report "${{ inputs.result-file }}" -w "${{ inputs.workspace }}") 
+    - name:  Upload Results
+      run:   faraday-cli tool report "${{ inputs.result-file }}" 
       shell: bash
