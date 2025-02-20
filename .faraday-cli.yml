@@ -1,0 +1,5 @@
+settings:
+  auto_command_detection: true
+  custom_plugins_path: null
+  quiet: true
+  ignore_info_severity: true

@@ -40,7 +40,7 @@ inputs:
   allow-style:  
     description: 'Verbosity style of the tool output (valid values:Always, Never, Terminal)'
     required: false
-    default: 'Terminal'
+    default: ''
  
 runs:
   using: "composite"
@@ -48,11 +48,14 @@ runs:
     - name: Setup Reporter
       run: |  
         pip install faraday-cli -q
+        faraday-cli auth -f "${{ inputs.instance-url }}" -i -u "${{ inputs.username }}" -p "${{ inputs.password }}"
+        faraday-cli workspace select "${{ inputs.workspace }}" || faraday-cli workspace create "${{ inputs.workspace }}" 
+      shell: bash
+    - if: !inputs.ignore-info-severity || !inputs.quiet
+      run: |  
         faraday-cli set quiet ${{ inputs.quiet }}
         faraday-cli set allow_style ${{ inputs.allow-style }}
         faraday-cli set ignore_info_severity ${{ inputs.ignore-info-severity }}
-        faraday-cli auth -f "${{ inputs.instance-url }}" -i -u "${{ inputs.username }}" -p "${{ inputs.password }}"
-        faraday-cli workspace select "${{ inputs.workspace }}" || faraday-cli workspace create "${{ inputs.workspace }}" 
       shell: bash
     - name:  Upload Results
       run:   faraday-cli tool report "${{ inputs.result-file }}" 
