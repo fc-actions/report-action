@@ -1,0 +1,37 @@
+# action.yml
+name: 'FireClover Reporter'
+description: 'FireClover Vulnerability Management Reporter Tool'
+branding:
+  icon: 'flame'  
+  color: 'orange'
+inputs:
+  instance-url:
+    description: 'The FireClover reporter instance url'
+    required: true
+    default: ''
+  email:
+    description: 'The email address to which the report will be sent.'
+    required: false
+    default: '' 
+  result-file:  
+    description: 'The path to the result file'
+    required: true
+    default: ''
+  username:  
+    description: 'The username to login to the reporter tool'
+    required: false
+    default: 'faraday'
+  password:  
+    description: 'The password to login to the reporter tool'
+    required: true
+    default: ''
+ 
+runs:
+  using: "composite"
+  steps:
+    - run:   pip install faraday-cli
+      shell: bash
+    - run:   faraday-cli auth -f "${{ inputs.instance-url }}" -i -u "${{ inputs.username }}" -p "${{ inputs.password }}"
+      shell: bash
+    - run:   faraday-cli tool report "${{ inputs.result-file }}"
+      shell: bash
