@@ -48,7 +48,7 @@ runs:
     - run: |  
         echo "Configuring FireClover Reporter"
         cp ${GITHUB_ACTION_PATH}/.faraday-cli.yml ~/.faraday-cli.yml
-        pip install faraday-cli -q
+        pip install faraday-cli -q || pip3 install faraday-cli -q
         faraday-cli auth -f "${{ inputs.instance-url }}" -u "${{ inputs.username }}" -p "${{ inputs.password }}"
       shell: bash
 
