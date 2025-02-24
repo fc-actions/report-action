@@ -54,7 +54,7 @@ runs:
         IFS=$'\n'
         for severity in ${{ inputs.create_repo_issues }}
         do
-            for d in $(jq -r ".matches[].vulnerability|select(.severity == \"$severity\")|{\"title\":.id,\"body\":.description,\"labels\":[40,51]}|@json" ${{ inputs.result-file }})
+            for d in $(jq -r ".matches[].vulnerability|select(.severity == \"$severity\")|{\"title\":.id,\"body\":.description,\"labels\":[40,51],\"projects\":[${{ variables.VULN_MGMT_PROJECT_ID }}]}|@json" ${{ inputs.result-file }})
                 do curl -H "content-type: application/json" -u "${{ secrets.ACTIONS_USER }}:${{ secrets.ACTIONS_TOKEN }}" "${{ github.api_url }}/api/v1/repos/${{ github.repository }}/issues" -d $d
             done
         done
