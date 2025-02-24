@@ -29,6 +29,10 @@ inputs:
     description: 'The password to login to the reporter tool'
     required: true
     default: ''
+  create_repo_issues:
+    description: 'Create vulnerabilities reported as issues in repository'
+    required: false
+    default: ['Critical', 'High']
   quiet:  
     description: 'Verbosity of the tool output'
     required: false
@@ -45,10 +49,25 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - if: ${{ inputs.create_repo_issues && contains(inputs.result-file, "grype") }}
+      run: |  
+        IFS=$'\n'
+        for severity in ${{ inputs.create_repo_issues }}
+        do
+            for d in $(jq -r ".matches[].vulnerability|select(.severity == \"$severity\")|{\"title\":.id,\"body\":.description,\"labels\":[40,51]}|@json" ${{ inputs.result-file }})
+                do curl -H "content-type: application/json" -u "${{ secrets.ACTIONS_USER }}:${{ secrets.ACTIONS_TOKEN }}" "${{ github.api_url }}/api/v1/repos/${{ github.repository }}/issues" -d $d
+            done
+        done
+      shell: bash
+
     - run: |  
         echo "Configuring FireClover Reporter"
         cp ${GITHUB_ACTION_PATH}/.faraday-cli.yml ~/.faraday-cli.yml
+<<<<<<< HEAD
         pip install faraday-cli -q --break-system-packages|| pip3 install faraday-cli -q --break-system-packages
+=======
+        pip install faraday-cli -q # TODO use regular curl instead of python dependency
+>>>>>>> fe19648 (test report create issues)
         faraday-cli auth -f "${{ inputs.instance-url }}" -u "${{ inputs.username }}" -p "${{ inputs.password }}"
       shell: bash
 
@@ -58,6 +77,7 @@ runs:
         faraday-cli set allow_style ${{ inputs.allow-style }}
         faraday-cli set ignore_info_severity ${{ inputs.ignore-info-severity }}
       shell: bash
+
 
     - run:   faraday-cli tool report "${{ inputs.result-file }}" -w "${{ inputs.workspace }}" 
       shell: bash
