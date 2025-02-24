@@ -63,11 +63,7 @@ runs:
     - run: |  
         echo "Configuring FireClover Reporter"
         cp ${GITHUB_ACTION_PATH}/.faraday-cli.yml ~/.faraday-cli.yml
-<<<<<<< HEAD
-        pip install faraday-cli -q --break-system-packages|| pip3 install faraday-cli -q --break-system-packages
-=======
-        pip install faraday-cli -q # TODO use regular curl instead of python dependency
->>>>>>> fe19648 (test report create issues)
+        pip install faraday-cli -q --break-system-packages|| pip3 install faraday-cli -q --break-system-packages # TODO use regular curl instead of python dependency
         faraday-cli auth -f "${{ inputs.instance-url }}" -u "${{ inputs.username }}" -p "${{ inputs.password }}"
       shell: bash
 
